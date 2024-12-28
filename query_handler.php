@@ -39,6 +39,13 @@ class QueryHandler extends Database {
         }
     }
 
+    private function getZOTU($refseq) {
+        $sql = "SELECT seq_zotu FROM \"RefSequence\" WHERE refsequence_pk = {$refseq}";
+
+        $result = $this->select($sql);
+
+    }
+
     public function renderOptions($column, $conditions = []) {
         // Sanitize the column name to prevent SQL injection
         $allowedColumns = ['country_geonames_continent', 'country_parent', 'country_geoname_pref_en'];
@@ -76,7 +83,7 @@ class QueryHandler extends Database {
         // Sanitize the column name to prevent SQL injection
         $allowedColumns = ['country_geonames_continent', 'country_parent', 'country_geoname_pref_en'];
 
-        $query = 'SELECT S.sra_sample, C.refsequence_pk, R.seq_zotu
+        $query = 'SELECT S.sra_sample, S.country_geoname_pref_en, C.refsequence_pk, R.seq_zotu
 FROM "Sample" S
 JOIN "Contain" C ON S.sample_pk = C.sample_pk
 JOIN "RefSequence" R ON C.refsequence_pk = R.refsequence_pk';
@@ -138,8 +145,24 @@ AND ', $whereClauses);
         // Print table rows
         foreach ($results as $row) {
             echo "<tr>";
-            foreach ($row as $cell) {
-                echo "<td>{$cell}</td>";
+            foreach ($row as $key => $cell) {
+                if ($key === 'refsequence_pk') {
+                    echo '<td>
+                        <button class="button is-small is-rounded is-link is-outlined"
+                            hx-post="query_handler.php"
+                            hx-target="#modal-content"
+                            hx-vals=\'{
+                                "action": "getZOTU",
+                                "refseq": "' . htmlspecialchars($cell) . '"
+                            }\'
+                            hx-trigger="click"
+                            hx-swap="innerHTML">
+                            ' . htmlspecialchars($cell) . '
+                        </button>
+                    </td>';
+                } else {
+                    echo '<td>' . htmlspecialchars($cell) . '</td>';
+                }
             }
             echo "</tr>";
         }
