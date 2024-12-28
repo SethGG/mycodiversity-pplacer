@@ -20,12 +20,13 @@ class QueryHandler extends Database {
                         return;
                     }
 
+                    echo "<div style='overflow-x: auto; overflow-y: auto; max-width: 100%; max-height: 1000px; border: 1px solid #ddd;'>";
                     echo "<table class='table is-striped is-hoverable is-fullwidth'>";
                     echo "<thead><tr>";
 
                     // Print table headers
                     foreach (array_keys($results[0]) as $header) {
-                        echo "<th>{$header}</th>";
+                        echo "<th style='position: sticky; top: 0; background-color: #f5f5f5;'>{$header}</th>";
                     }
                     echo "</tr></thead><tbody>";
 
@@ -39,6 +40,7 @@ class QueryHandler extends Database {
                     }
 
                     echo "</tbody></table>";
+                    echo "</div>";
                 } elseif ($action === 'rowcount') {
                     $rowCount = $this->row_count($query);
                     echo "<p class='has-text-info'>Row Count: <strong>{$rowCount}</strong></p>";
