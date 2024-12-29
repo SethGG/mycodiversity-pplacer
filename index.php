@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MDDB4 Query Builder</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    <script src="https://unpkg.com/htmx.org@1.9.12/dist/htmx.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <script src="https://unpkg.com/htmx-ext-sse@2.2.2/sse.js"></script>
 </head>
 <body>
     <section class="section">
@@ -101,6 +102,11 @@
                         hx-include="#continentDropdown, #subregionDropdown, #countryDropdown"
                         name="action" 
                         value="rowCount">Row Count
+                    </button>
+                    <button class="button is-warning"
+                        hx-get="start_ping.php"
+                        hx-target="#result"
+                        hx-swap="innerHTML">Ping test
                     </button>
                 </div>
             </div>

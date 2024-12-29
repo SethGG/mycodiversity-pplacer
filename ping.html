@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTMX Real-Time Ping with SSE</title>
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <script src="https://unpkg.com/htmx-ext-sse@2.2.2/sse.js"></script>
+    <style>
+        #output {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            background: #f9f9f9;
+            height: 300px;
+            overflow-y: scroll;
+        }
+        .ping-line {
+            margin: 2px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real-Time Ping with HTMX SSE</h1>
+    <button 
+        hx-ext="sse"
+        sse-connect="ping.php"
+        sse-swap="message"
+        hx-target="#output"
+        hx-swap="beforeend"
+    >
+        Run Ping
+    </button>
+    <div id="output"></div>
+</body>
+</html>
