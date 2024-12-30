@@ -15,7 +15,6 @@ if ($returnVar === 0 && isset($output[0])) {
     file_put_contents($pidFile, trim($output[0]));
     
     echo '
-    <h1>Ping command output</h1>
     <pre 
         hx-ext="sse"
         sse-connect="ping.php?job=' . htmlspecialchars($jobId) . '"
