@@ -1,3 +1,11 @@
+<?php
+    require_once '../src/get_options.php';
+    require_once '../src/database.php';
+    require_once '../src/build_query.php';
+    require_once '../src/query_preview.php';
+    $db = new Database();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,17 +25,16 @@
                 <h5 class="title is-5">Sample Filters</h5>
                 <div class="columns">
                 <?php
-                    require_once '../src/get_options.php';
                     $geoFilters = [
                         "study_bioproject_id" => "BioProject",
                         "biosample_id" => "BioSample",
                         "study_sra_id" => "SRA Study",
                         "sra_sample" => "SRA Sample"
-                    ];
+                    ];                   
                     foreach ($geoFilters as $column => $label) {
                         echo "<div class='column'>";
                         echo "<label class='label'>{$label}</label>";
-                        $results = modelGetOptions($column, []);
+                        $results = modelGetOptions($db, $column, []);
                         $view = viewGetOptions($results, $column, []);
                         echo $view;
                         echo "</div>";
@@ -35,12 +42,13 @@
                     ?>
                 </div>
             </div>
+            <div class="columns">
             <!-- Geographical Filters -->
+            <div class="column is-half">
             <div class="box">
                 <h5 class="title is-5">Geographical Filters</h5>
                 <div class="columns">
                 <?php
-                    require_once '../src/get_options.php';
                     $geoFilters = [
                         "country_geonames_continent" => "Continent",
                         "country_parent" => "Subregion",
@@ -49,7 +57,7 @@
                     foreach ($geoFilters as $column => $label) {
                         echo "<div class='column'>";
                         echo "<label class='label'>{$label}</label>";
-                        $results = modelGetOptions($column, []);
+                        $results = modelGetOptions($db, $column, []);
                         $view = viewGetOptions($results, $column, []);
                         echo $view;
                         echo "</div>";
@@ -57,12 +65,13 @@
                     ?>
                 </div>
             </div>
+            </div>
             <!-- Environmental Filters -->
+            <div class="column is-half">
             <div class="box">
                 <h5 class="title is-5">Environmental Filters</h5>
                 <div class="columns">
                 <?php
-                    require_once '../src/get_options.php';
                     $geoFilters = [
                         "env_feature" => "Environment Feature",
                         "envo_biome_term" => "Biome Term",
@@ -71,7 +80,7 @@
                     foreach ($geoFilters as $column => $label) {
                         echo "<div class='column'>";
                         echo "<label class='label'>{$label}</label>";
-                        $results = modelGetOptions($column, []);
+                        $results = modelGetOptions($db, $column, []);
                         $view = viewGetOptions($results, $column, []);
                         echo $view;
                         echo "</div>";
@@ -79,12 +88,13 @@
                     ?>
                 </div>
             </div>
+            </div>
+            </div>
             <!-- Taxonomy Filters -->
             <div class="box">
                 <h5 class="title is-5">Taxonomy Filters</h5>
                 <div class="columns">
                 <?php
-                    require_once '../src/get_options.php';
                     $geoFilters = [
                         "phylum_name" => "Phylum",
                         "class_name" => "Class",
@@ -96,7 +106,7 @@
                     foreach ($geoFilters as $column => $label) {
                         echo "<div class='column'>";
                         echo "<label class='label'>{$label}</label>";
-                        $results = modelGetOptions($column, []);
+                        $results = modelGetOptions($db, $column, []);
                         $view = viewGetOptions($results, $column, []);
                         echo $view;
                         echo "</div>";
@@ -107,8 +117,6 @@
             <div class="box">
                 <label class="label">SQL Query Preview</label>
                 <?php
-                    require_once '../src/build_query.php';
-                    require_once '../src/query_preview.php';
                     $query = buildQuery();
                     $view = viewQueryPreview($query);
                     echo $view;
@@ -141,8 +149,5 @@
             </div>
         </div>
     </section>
-    <script>
-        htmx.logAll()
-    </script>
 </body>
 </html>

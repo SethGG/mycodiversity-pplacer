@@ -4,6 +4,7 @@ require_once '../../src/get_options.php';
 require_once '../../src/get_conditions.php';
 require_once '../../src/build_query.php';
 require_once '../../src/query_preview.php';
+require_once '../../src/database.php';
 
 $conditions = getConditions();
 
@@ -26,9 +27,11 @@ $filterColumns = [
     'species_name'
 ];
 
+$db = new Database();
+
 $view = '';
 foreach($filterColumns as $column) {
-    $results = modelGetOptions($column, $conditions);
+    $results = modelGetOptions($db, $column, $conditions);
     $view .= viewGetOptions($results, $column, $conditions);
 }
 

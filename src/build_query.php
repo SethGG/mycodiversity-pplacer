@@ -1,6 +1,10 @@
 <?php
 
-function buildQuery($conditions = [], $select = ['*'], $distinct = false, $count = false) {
+define('DEFAULT_SELECT',
+    ['sra_sample', 'biosample_id', 'country_geoname_pref_en', 'envo_biome_term', 'refsequence_pk', 'sh_unite_id', 'phylum_name', 'species_name']
+);
+
+function buildQuery($conditions = [], $orderBy = ['refsequence_pk'], $select = DEFAULT_SELECT, $distinct = false, $count = false) {
     $tableMapping = [
         'country_geonames_continent' => 'SP',
         'country_parent' => 'SP',
@@ -17,7 +21,10 @@ function buildQuery($conditions = [], $select = ['*'], $distinct = false, $count
         "order_name" => "RT",
         "family_name" => "RT",
         "genus_name" => "RT",
-        "species_name" => "RT"
+        "species_name" => "RT",
+        "sh_unite_id" => "RT",
+        "refsequence_pk" => "RS",
+        "seq_zotu" => "RS"
     ];
 
     // Build SELECT clause
@@ -33,7 +40,6 @@ function buildQuery($conditions = [], $select = ['*'], $distinct = false, $count
                 if ($tableAlias) {
                     $mappedSelect[] = "{$tableAlias}." . htmlspecialchars($column);
                 } else {
-                    // If no mapping is found, include column without alias
                     $mappedSelect[] = htmlspecialchars($column);
                 }
             }
@@ -62,7 +68,6 @@ function buildQuery($conditions = [], $select = ['*'], $distinct = false, $count
                 $whereValue = htmlspecialchars($whereValue); // Sanitize value
                 $whereClauses[] = "{$tableAlias}.{$whereColumn} = '{$whereValue}'";
             } else {
-                // If no mapping exists, use column as is
                 $whereClauses[] = "{$whereColumn} = '{$whereValue}'";
             }
         }
@@ -71,8 +76,30 @@ WHERE ' . implode('
 AND ', $whereClauses);
     }
 
+    // Process ORDER BY clause if provided
+    if (!empty($orderBy)) {
+        $orderClauses = [];
+        if (is_array($orderBy)) {
+            foreach ($orderBy as $orderColumn) {
+                $tableAlias = $tableMapping[$orderColumn] ?? null;
+                if ($tableAlias) {
+                    $orderClauses[] = "{$tableAlias}.{$orderColumn}";
+                } else {
+                    $orderClauses[] = $orderColumn;
+                }
+            }
+        } else {
+            $tableAlias = $tableMapping[$orderBy] ?? null;
+            if ($tableAlias) {
+                $orderClauses[] = "{$tableAlias}.{$orderBy}";
+            } else {
+                $orderClauses[] = $orderBy;
+            }
+        }
+        $base_query .= '
+ORDER BY ' . implode(', ', $orderClauses);
+    }
+
     return $base_query;
 }
-
-
 ?>

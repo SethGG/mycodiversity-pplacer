@@ -1,15 +1,13 @@
 <?php
 
-require_once 'database.php';
 require_once 'build_query.php';
 
-function modelQueryTable($conditions, $page, $rowsPerPage) {
+function modelQueryTable($db, $conditions, $page, $rowsPerPage) {
     $query = buildQuery($conditions);
 
     $offset = ($page - 1) * $rowsPerPage;
     $paginatedQuery = $query . " LIMIT {$rowsPerPage} OFFSET {$offset}";
 
-    $db = new Database();
     $pageResults = $db->select($paginatedQuery);
     $totalRows = $db->row_count($query);
 
@@ -41,14 +39,12 @@ function viewQueryTable($pageResults, $totalRows, $page, $rowsPerPage) {
             if ($key === 'refsequence_pk') {
                 $view .= '<td>
                     <button class="button is-small is-rounded is-link is-outlined"
-                        hx-post="query_handler.php"
-                        hx-target="#modal-content"
-                        hx-vals=\'{
-                            "action": "getZOTU",
-                            "refseq": "' . htmlspecialchars($cell) . '"
-                        }\'
-                        hx-trigger="click"
-                        hx-swap="innerHTML">
+                        name="refseq"
+                        value="' . $cell . '"
+                        hx-post="partials/get_refseq.php"
+                        hx-target="body"
+                        hx-swap="beforeend"
+                        >
                         ' . htmlspecialchars($cell) . '
                     </button>
                 </td>';

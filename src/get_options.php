@@ -2,12 +2,9 @@
 
 require_once 'get_conditions.php';
 require_once 'build_query.php';
-require_once 'database.php';
 
-function modelGetOptions($column, $conditions) {
-    $query = buildQuery($conditions, [$column], true);
-
-    $db = new Database();
+function modelGetOptions($db, $column, $conditions) {
+    $query = buildQuery($conditions, [], [$column], true);
     $results = $db->select($query);
 
     return $results;
@@ -30,7 +27,7 @@ function viewGetOptions($results, $column, $conditions) {
         $value = htmlspecialchars($selectedValue);
         return <<<HTML
         <button id="select_wrapper_{$column}"
-            class="button is-danger is-outlined is-fullwidth is-justify-content-flex-start px-3"
+            class="button is-small is-danger is-outlined is-fullwidth is-justify-content-flex-start px-3"
             hx-post="partials/get_options.php"
             hx-include=".where_filters"
             hx-swap="none"
@@ -45,7 +42,7 @@ function viewGetOptions($results, $column, $conditions) {
     }
 
     // Otherwise, show the dropdown
-    $view = "<div id=\"select_wrapper_{$column}\" class=\"select is-fullwidth\" hx-swap-oob=\"true\">
+    $view = "<div id=\"select_wrapper_{$column}\" class=\"select is-small is-fullwidth\" hx-swap-oob=\"true\">
         <select
             class=\"where_filters px-3\"
             name=\"where_{$column}\"
