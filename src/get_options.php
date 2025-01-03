@@ -5,14 +5,7 @@ require_once 'build_query.php';
 require_once 'database.php';
 
 function modelGetOptions($column, $conditions) {
-    // Sanitize the column name to prevent SQL injection
-    $allowedColumns = ['country_geonames_continent', 'country_parent', 'country_geoname_pref_en'];
-    if (!in_array($column, $allowedColumns)) {
-        throw new Exception('Invalid column name');
-    }
-
-    $base_query = "SELECT DISTINCT {$column} FROM \"Sample\"";
-    $query = buildQuery($base_query, $conditions);
+    $query = buildQuery($conditions, [$column], true);
 
     $db = new Database();
     $results = $db->select($query);
@@ -23,38 +16,54 @@ function modelGetOptions($column, $conditions) {
 function viewGetOptions($results, $column, $conditions) {
     $selectedValue = $conditions[$column] ?? '';
 
-    $view = "<select id=\"select_{$column}\"
-        class=\"where_filters\"
-        name=\"where_{$column}\"
-        hx-post=\"partials/get_options.php\"
-        hx-trigger=\"change\"
-        hx-include=\".where_filters\"
-        hx-swap=\"none\"
-        hx-swap-oob=\"true\"
-        >";
-
-    // Track if we found the selected value in the results
+    // Check if selected value exists in the results
     $foundSelected = false;
-    
-    $options = '';
+    foreach ($results as $row) {
+        if ($row[$column] === $selectedValue) {
+            $foundSelected = true;
+            break;
+        }
+    }
+
+    // Show static box only if selected value exists in results
+    if (!empty($selectedValue) && $foundSelected) {
+        $value = htmlspecialchars($selectedValue);
+        return <<<HTML
+        <button id="select_wrapper_{$column}"
+            class="button is-danger is-outlined is-fullwidth is-justify-content-flex-start px-3"
+            hx-post="partials/get_options.php"
+            hx-include=".where_filters"
+            hx-swap="none"
+            hx-swap-oob="true"
+            name="where_{$column}"
+            value=""
+            title="Cancel Selection">
+            {$value}
+            <input type="hidden" name="where_{$column}" value="{$value}" class="where_filters">
+        </button>
+        HTML;
+    }
+
+    // Otherwise, show the dropdown
+    $view = "<div id=\"select_wrapper_{$column}\" class=\"select is-fullwidth\" hx-swap-oob=\"true\">
+        <select
+            class=\"where_filters px-3\"
+            name=\"where_{$column}\"
+            hx-post=\"partials/get_options.php\"
+            hx-trigger=\"change\"
+            hx-include=\".where_filters\"
+            hx-swap=\"none\">
+            <option selected=\"selected\" value=\"\">Select Option</option>";
+
     foreach ($results as $row) {
         $value = htmlspecialchars($row[$column]);
         $isSelected = ($value === $selectedValue) ? 'selected="selected"' : '';
-
-        if ($isSelected) {
-            $foundSelected = true; // Mark as found
-        }
-
-        $options .= "<option {$isSelected} value=\"{$value}\">{$value}</option>";
+        $view .= "<option {$isSelected} value=\"{$value}\">{$value}</option>";
     }
 
-    // Default "Select Option"
-    $defaultSelected = !$foundSelected ? 'selected="selected"' : '';
-    $defaultMessage = !$foundSelected ? 'Select Option' : 'Cancel Selection';
-    $view .= "<option {$defaultSelected} value=\"\">{$defaultMessage}</option>" . $options;
-
-    $view .= "</select>";
+    $view .= "</select></div>";
     return $view;
 }
+
 
 ?>

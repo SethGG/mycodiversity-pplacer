@@ -2,18 +2,38 @@
 
 require_once '../../src/get_options.php';
 require_once '../../src/get_conditions.php';
+require_once '../../src/build_query.php';
+require_once '../../src/query_preview.php';
 
 $conditions = getConditions();
 
-$allowedColumns = ['country_geonames_continent', 'country_parent', 'country_geoname_pref_en'];
+$filterColumns = [
+    'country_geonames_continent',
+    'country_parent',
+    'country_geoname_pref_en',
+    'study_bioproject_id',
+    'biosample_id',
+    'study_sra_id',
+    'sra_sample',
+    'env_feature',
+    'envo_biome_term',
+    'env_material',
+    'phylum_name',
+    'class_name',
+    'order_name',
+    'family_name',
+    'genus_name',
+    'species_name'
+];
 
 $view = '';
-foreach($allowedColumns as $column) {
+foreach($filterColumns as $column) {
     $results = modelGetOptions($column, $conditions);
     $view .= viewGetOptions($results, $column, $conditions);
 }
 
-echo $view;
+$query = buildQuery($conditions);
+$view .= viewQueryPreview($query);
 
-header("HX-Trigger:reloadQueryPreview");
+echo $view;
 ?>

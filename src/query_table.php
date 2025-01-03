@@ -1,8 +1,11 @@
 <?php
 
 require_once 'database.php';
+require_once 'build_query.php';
 
-function modelQueryTable($query, $page, $rowsPerPage) {
+function modelQueryTable($conditions, $page, $rowsPerPage) {
+    $query = buildQuery($conditions);
+
     $offset = ($page - 1) * $rowsPerPage;
     $paginatedQuery = $query . " LIMIT {$rowsPerPage} OFFSET {$offset}";
 
