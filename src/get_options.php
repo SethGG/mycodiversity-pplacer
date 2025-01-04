@@ -4,7 +4,7 @@ require_once 'get_conditions.php';
 require_once 'build_query.php';
 
 function modelGetOptions($db, $column, $conditions) {
-    $query = buildQuery($conditions, [], [$column], true);
+    $query = buildQuery($conditions, [], [$column], [$column]);
     $results = $db->select($query);
 
     return $results;

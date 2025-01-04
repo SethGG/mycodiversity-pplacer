@@ -11,7 +11,18 @@ $conditions = getConditions();
 $page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
 $rowsPerPage = 15;
 list($pageResults, $totalRows) = modelQueryTable($db, $conditions, $page, $rowsPerPage);
-$view = viewQueryTable($pageResults, $totalRows, $page, $rowsPerPage);
+$view1 = viewQueryTable($pageResults, $totalRows, $page, $rowsPerPage);
+
+$statResults = modelQueryStats($db, $conditions);
+$view2 = viewQueryStats($statResults);
+
+$view = <<<HTML
+    <div id="result" class="columns">
+        <div class="column">{$view2}</div>
+        <div class="column">{$view1}</div>
+    </div>
+HTML;
+
 
 echo $view;
 

@@ -1,10 +1,12 @@
 <?php
 
-define('DEFAULT_SELECT',
-    ['sra_sample', 'biosample_id', 'country_geoname_pref_en', 'envo_biome_term', 'refsequence_pk', 'sh_unite_id', 'phylum_name', 'species_name']
-);
-
-function buildQuery($conditions = [], $orderBy = ['refsequence_pk'], $select = DEFAULT_SELECT, $distinct = false, $count = false) {
+function buildQuery($conditions = [],
+    $orderBy = ['refsequence_pk'],
+    $select = [],
+    $distinct = [],
+    $count = [],
+    $groupBy = []
+    ) {
     $tableMapping = [
         'country_geonames_continent' => 'SP',
         'country_parent' => 'SP',
@@ -28,24 +30,37 @@ function buildQuery($conditions = [], $orderBy = ['refsequence_pk'], $select = D
     ];
 
     // Build SELECT clause
-    if ($count) {
-        $selectClause = 'COUNT(*)';
-    } else {
-        $mappedSelect = [];
-        foreach ($select as $column) {
-            if ($column === '*') {
-                $mappedSelect[] = '*';
+    $mappedSelect = [];
+
+    // Add regular SELECT columns first
+    foreach ($select as $column) {
+        $tableAlias = $tableMapping[$column] ?? null;
+        $prefixedColumn = $tableAlias ? "{$tableAlias}." . htmlspecialchars($column) : htmlspecialchars($column);
+
+        // Check if column is in DISTINCT array
+        if (in_array($column, $distinct)) {
+            $mappedSelect[] = "DISTINCT {$prefixedColumn}";
+        } else {
+            $mappedSelect[] = $prefixedColumn;
+        }
+    }
+
+    // Add COUNT columns after SELECT columns
+    if (!empty($count)) {
+        foreach ($count as $column) {
+            $tableAlias = $tableMapping[$column] ?? null;
+            $prefixedColumn = $tableAlias ? "{$tableAlias}." . htmlspecialchars($column) : htmlspecialchars($column);
+
+            // Check if column is in DISTINCT array
+            if (in_array($column, $distinct)) {
+                $mappedSelect[] = "COUNT(DISTINCT {$prefixedColumn}) AS count_{$column}";
             } else {
-                $tableAlias = $tableMapping[$column] ?? null;
-                if ($tableAlias) {
-                    $mappedSelect[] = "{$tableAlias}." . htmlspecialchars($column);
-                } else {
-                    $mappedSelect[] = htmlspecialchars($column);
-                }
+                $mappedSelect[] = "COUNT({$prefixedColumn}) AS count_{$column}";
             }
         }
-        $selectClause = ($distinct ? 'DISTINCT ' : '') . implode(', ', $mappedSelect);
     }
+
+    $selectClause = implode(', ', array_unique($mappedSelect));
 
     // Base query
     $base_query = <<<SQL
@@ -74,6 +89,21 @@ function buildQuery($conditions = [], $orderBy = ['refsequence_pk'], $select = D
         $base_query .= '
 WHERE ' . implode('
 AND ', $whereClauses);
+    }
+
+    // Process GROUP BY clause if provided
+    if (!empty($groupBy)) {
+        $groupClauses = [];
+        foreach ($groupBy as $groupColumn) {
+            $tableAlias = $tableMapping[$groupColumn] ?? null;
+            if ($tableAlias) {
+                $groupClauses[] = "{$tableAlias}.{$groupColumn}";
+            } else {
+                $groupClauses[] = $groupColumn;
+            }
+        }
+        $base_query .= '
+GROUP BY ' . implode(', ', $groupClauses);
     }
 
     // Process ORDER BY clause if provided

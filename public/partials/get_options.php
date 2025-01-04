@@ -35,7 +35,13 @@ foreach($filterColumns as $column) {
     $view .= viewGetOptions($results, $column, $conditions);
 }
 
-$query = buildQuery($conditions);
+$query = buildQuery($conditions,
+    ['refsequence_pk'],
+    ['refsequence_pk', 'sh_unite_id', 'phylum_name', 'species_name'],
+    ['biosample_id', 'sra_sample'],
+    ['biosample_id', 'sra_sample'],
+    ['refsequence_pk', 'sh_unite_id', 'phylum_name', 'species_name']
+);
 $view .= viewQueryPreview($query);
 
 echo $view;

@@ -21,133 +21,149 @@
         <div class="container">
             <h1 class="title">MDDB4 Query Builder</h1>
             <!-- Sample Filters -->
-            <div class="box">
-                <h5 class="title is-5">Sample Filters</h5>
-                <div class="columns">
-                <?php
-                    $geoFilters = [
-                        "study_bioproject_id" => "BioProject",
-                        "biosample_id" => "BioSample",
-                        "study_sra_id" => "SRA Study",
-                        "sra_sample" => "SRA Sample"
-                    ];                   
-                    foreach ($geoFilters as $column => $label) {
-                        echo "<div class='column'>";
-                        echo "<label class='label'>{$label}</label>";
-                        $results = modelGetOptions($db, $column, []);
-                        $view = viewGetOptions($results, $column, []);
-                        echo $view;
-                        echo "</div>";
-                    }
-                    ?>
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">Sample Filters</p>
+                </header>
+                <div class="card-content p-4">
+                    <div class="columns">
+                    <?php
+                        $geoFilters = [
+                            "study_bioproject_id" => "BioProject",
+                            "biosample_id" => "BioSample",
+                            "study_sra_id" => "SRA Study",
+                            "sra_sample" => "SRA Sample"
+                        ];                   
+                        foreach ($geoFilters as $column => $label) {
+                            echo "<div class='column'>";
+                            echo "<label class='label has-text-weight-medium'>{$label}</label>";
+                            $results = modelGetOptions($db, $column, []);
+                            $view = viewGetOptions($results, $column, []);
+                            echo $view;
+                            echo "</div>";
+                        }
+                        ?>
+                    </div>
                 </div>
             </div>
             <div class="columns">
             <!-- Geographical Filters -->
             <div class="column is-half">
-            <div class="box">
-                <h5 class="title is-5">Geographical Filters</h5>
-                <div class="columns">
-                <?php
-                    $geoFilters = [
-                        "country_geonames_continent" => "Continent",
-                        "country_parent" => "Subregion",
-                        "country_geoname_pref_en" => "Country"
-                    ];
-                    foreach ($geoFilters as $column => $label) {
-                        echo "<div class='column'>";
-                        echo "<label class='label'>{$label}</label>";
-                        $results = modelGetOptions($db, $column, []);
-                        $view = viewGetOptions($results, $column, []);
-                        echo $view;
-                        echo "</div>";
-                    }
-                    ?>
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">Geographical Filters</p>
+                </header>
+                <div class="card-content p-4">
+                    <div class="columns">
+                    <?php
+                        $geoFilters = [
+                            "country_geonames_continent" => "Continent",
+                            "country_parent" => "Subregion",
+                            "country_geoname_pref_en" => "Country"
+                        ];
+                        foreach ($geoFilters as $column => $label) {
+                            echo "<div class='column'>";
+                            echo "<label class='label has-text-weight-medium'>{$label}</label>";
+                            $results = modelGetOptions($db, $column, []);
+                            $view = viewGetOptions($results, $column, []);
+                            echo $view;
+                            echo "</div>";
+                        }
+                        ?>
+                    </div>
                 </div>
             </div>
             </div>
             <!-- Environmental Filters -->
             <div class="column is-half">
-            <div class="box">
-                <h5 class="title is-5">Environmental Filters</h5>
-                <div class="columns">
-                <?php
-                    $geoFilters = [
-                        "env_feature" => "Environment Feature",
-                        "envo_biome_term" => "Biome Term",
-                        "env_material" => "Material",
-                    ];
-                    foreach ($geoFilters as $column => $label) {
-                        echo "<div class='column'>";
-                        echo "<label class='label'>{$label}</label>";
-                        $results = modelGetOptions($db, $column, []);
-                        $view = viewGetOptions($results, $column, []);
-                        echo $view;
-                        echo "</div>";
-                    }
-                    ?>
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">Environmental Filters</p>
+                </header>
+                <div class="card-content p-4">
+                    <div class="columns">
+                    <?php
+                        $geoFilters = [
+                            "env_feature" => "Environment Feature",
+                            "envo_biome_term" => "Biome Term",
+                            "env_material" => "Material",
+                        ];
+                        foreach ($geoFilters as $column => $label) {
+                            echo "<div class='column'>";
+                            echo "<label class='label has-text-weight-medium'>{$label}</label>";
+                            $results = modelGetOptions($db, $column, []);
+                            $view = viewGetOptions($results, $column, []);
+                            echo $view;
+                            echo "</div>";
+                        }
+                        ?>
+                    </div>
                 </div>
             </div>
             </div>
             </div>
             <!-- Taxonomy Filters -->
-            <div class="box">
-                <h5 class="title is-5">Taxonomy Filters</h5>
-                <div class="columns">
-                <?php
-                    $geoFilters = [
-                        "phylum_name" => "Phylum",
-                        "class_name" => "Class",
-                        "order_name" => "Order",
-                        "family_name" => "Family",
-                        "genus_name" => "Genus",
-                        "species_name" => "Species"
-                    ];
-                    foreach ($geoFilters as $column => $label) {
-                        echo "<div class='column'>";
-                        echo "<label class='label'>{$label}</label>";
-                        $results = modelGetOptions($db, $column, []);
-                        $view = viewGetOptions($results, $column, []);
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">Taxonomy Filters<p>
+                </header>
+                <div class="card-content p-4">
+                    <div class="columns">
+                    <?php
+                        $geoFilters = [
+                            "phylum_name" => "Phylum",
+                            "class_name" => "Class",
+                            "order_name" => "Order",
+                            "family_name" => "Family",
+                            "genus_name" => "Genus",
+                            "species_name" => "Species"
+                        ];
+                        foreach ($geoFilters as $column => $label) {
+                            echo "<div class='column'>";
+                            echo "<label class='label has-text-weight-medium'>{$label}</label>";
+                            $results = modelGetOptions($db, $column, []);
+                            $view = viewGetOptions($results, $column, []);
+                            echo $view;
+                            echo "</div>";
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">SQL Query Preview</p>
+                </header>
+                <div class="card-content p-0">
+                    <?php
+                        $query = buildQuery($conditions,
+                            ['refsequence_pk'],
+                            ['refsequence_pk', 'sh_unite_id', 'phylum_name', 'species_name'],
+                            ['biosample_id', 'sra_sample'],
+                            ['biosample_id', 'sra_sample'],
+                            ['refsequence_pk', 'sh_unite_id', 'phylum_name', 'species_name']
+                        );
+                        $view = viewQueryPreview($query);
                         echo $view;
-                        echo "</div>";
-                    }
                     ?>
                 </div>
-            </div>
-            <div class="box">
-                <label class="label">SQL Query Preview</label>
-                <?php
-                    $query = buildQuery();
-                    $view = viewQueryPreview($query);
-                    echo $view;
-                ?>
-                <div class="buttons mt-3">
-                    <button class="button is-primary"
-                        hx-post="partials/query_table.php"
-                        hx-target="#result"
-                        hx-swap="innerHTML"
-                        hx-include=".where_filters">
+                <footer class="card-footer">
+                    <a class="card-footer-item" hx-post="partials/query_table.php"
+                            hx-target="#result"
+                            hx-include=".where_filters">
                         Execute Query
-                    </button>
-                    <button class="button is-info"
-                        hx-post="query_handler.php"
-                        hx-target="#result"
-                        hx-swap="innerHTML"
-                        hx-include="#continentDropdown, #subregionDropdown, #countryDropdown"
-                        name="action" 
-                        value="rowCount">Row Count
-                    </button>
-                    <button class="button is-warning"
-                        hx-get="start_ping.php"
-                        hx-target="#result"
-                        hx-swap="innerHTML">Ping test
-                    </button>
-                </div>
+                    </a>
+                </footer>
             </div>
-            <div id="result" class="box">
-                <p class="has-text-grey">Results will be displayed here...</p>
+            <div id="result">
+                <div class="box">
+                    <p class="has-text-grey">Results will be displayed here...</p>
+                </div>
             </div>
         </div>
     </section>
+    <script>
+        htmx.logAll();
+    </script>
 </body>
 </html>
