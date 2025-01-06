@@ -18,7 +18,29 @@ $view2 = viewQueryStats($statResults);
 
 $view = <<<HTML
     <div id="result" class="columns">
-        <div class="column">{$view2}</div>
+        <div class="column">
+            {$view2}
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">Phylogenetic Placement</p>
+                </header>
+                <div class="card-content p-4">
+                    <div class="content">
+                    <p>Select a Phylogenetic reference tree to place the sequences on:</p>
+                    </div>
+                    <div class="select is-small">
+                        <select>
+                            <option>l0.2_s3_4_1500_o1.0_a0_constr_localpair</option>
+                        </select>
+                    </div>
+                </div>
+                <footer class="card-footer">
+                    <a class="card-footer-item" hx-post="partials/start_ping.php"
+                        hx-target="body"
+                        hx-swap="beforeend">Execute Placement</a>
+                </footer>
+            </div>
+        </div>
         <div class="column">{$view1}</div>
     </div>
 HTML;
