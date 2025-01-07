@@ -1,0 +1,74 @@
+
+
+Using BFGS method to optimize GTR rate parameters, to disable this specify "--no-bfgs" 
+
+
+
+This is RAxML version 8.2.12 released by Alexandros Stamatakis on May 2018.
+
+With greatly appreciated code contributions by:
+Andre Aberer      (HITS)
+Simon Berger      (HITS)
+Alexey Kozlov     (HITS)
+Kassian Kobert    (HITS)
+David Dao         (KIT and HITS)
+Sarah Lutteropp   (KIT and HITS)
+Nick Pattengale   (Sandia)
+Wayne Pfeiffer    (SDSC)
+Akifumi S. Tanabe (NRIFS)
+Charlie Taylor    (UF)
+
+
+Alignment has 391 distinct alignment patterns
+
+Proportion of gaps and completely undetermined characters in this alignment: 28.81%
+
+RAxML rapid hill-climbing mode
+
+Using 1 distinct models/data partitions with joint branch length optimization
+
+
+Executing 1 inferences on the original alignment using 1 distinct randomized MP trees
+
+All free model parameters will be estimated by RAxML
+ML estimate of 25 per site rate categories
+
+Likelihood of final tree will be evaluated and optimized under GAMMA
+
+GAMMA Model parameters will be estimated up to an accuracy of 0.1000000000 Log Likelihood units
+
+Partition: 0
+Alignment Patterns: 391
+Name: No Name Provided
+DataType: DNA
+Substitution Matrix: GTR
+
+
+
+
+RAxML was called as follows:
+
+standard-RAxML-8.2.13/raxmlHPC-PTHREADS-SSE3 -s MDDB-phylogeny/l0.2_s3_4_1500_o1.0_a0_constr_localpair/chunks/aligned/179_16_p__Ascomycota_c__Sordariomycetes_o__Boliniales.fasta -n 179.out -w /home/dzee/Documents/Studie/Bachelorklas/mycodiversity-arise/phylogenetic_placement/regen_trees -m GTRCAT -p 12345 -T 4 -o OUTGROUP 
+
+
+Partition: 0 with name: No Name Provided
+Base frequencies: 0.221 0.291 0.276 0.212 
+
+Inference[0]: Time 0.408924 CAT-based likelihood -3598.386088, best rearrangement setting 5
+alpha[0]: 1.000000 rates[0] ac ag at cg ct gt: 2.355465 2.785370 1.842336 1.130110 6.780688 1.000000 
+
+
+Conducting final model optimizations on all 1 trees under GAMMA-based models ....
+
+Inference[0] final GAMMA-based Likelihood: -4132.624353 tree written to file /home/dzee/Documents/Studie/Bachelorklas/mycodiversity-arise/phylogenetic_placement/regen_trees/RAxML_result.179.out
+
+
+Starting final GAMMA-based thorough Optimization on tree 0 likelihood -4132.624353 .... 
+
+Final GAMMA-based Score of best tree -4130.799115
+
+Program execution info written to /home/dzee/Documents/Studie/Bachelorklas/mycodiversity-arise/phylogenetic_placement/regen_trees/RAxML_info.179.out
+Best-scoring ML tree written to: /home/dzee/Documents/Studie/Bachelorklas/mycodiversity-arise/phylogenetic_placement/regen_trees/RAxML_bestTree.179.out
+
+Overall execution time: 0.708210 secs or 0.000197 hours or 0.000008 days
+

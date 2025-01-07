@@ -1,0 +1,90 @@
+
+
+IMPORTANT WARNING: Sequences SH1158054.08FU_KR493068_reps and SH1158052.08FU_KR493070_reps are exactly identical
+
+
+IMPORTANT WARNING: Sequences SH1158170.08FU_HE792935_reps and SH1158169.08FU_HE792934_refs are exactly identical
+
+
+IMPORTANT WARNING: Sequences SH1158292.08FU_HF934942_reps and SH1158288.08FU_HF934947_reps are exactly identical
+
+IMPORTANT WARNING
+Found 3 sequences that are exactly identical to other sequences in the alignment.
+Normally they should be excluded from the analysis.
+
+An alignment file with sequence duplicates removed has already
+been printed to file MDDB-phylogeny/l0.2_s3_4_1500_o1.0_a0_constr_localpair/chunks/aligned/118_1044_p__Ascomycota_c__Dothideomycetes_o__Pleosporales.fasta.reduced
+
+
+Using BFGS method to optimize GTR rate parameters, to disable this specify "--no-bfgs" 
+
+
+
+This is RAxML version 8.2.12 released by Alexandros Stamatakis on May 2018.
+
+With greatly appreciated code contributions by:
+Andre Aberer      (HITS)
+Simon Berger      (HITS)
+Alexey Kozlov     (HITS)
+Kassian Kobert    (HITS)
+David Dao         (KIT and HITS)
+Sarah Lutteropp   (KIT and HITS)
+Nick Pattengale   (Sandia)
+Wayne Pfeiffer    (SDSC)
+Akifumi S. Tanabe (NRIFS)
+Charlie Taylor    (UF)
+
+
+Alignment has 1726 distinct alignment patterns
+
+Proportion of gaps and completely undetermined characters in this alignment: 76.46%
+
+RAxML rapid hill-climbing mode
+
+Using 1 distinct models/data partitions with joint branch length optimization
+
+
+Executing 1 inferences on the original alignment using 1 distinct randomized MP trees
+
+All free model parameters will be estimated by RAxML
+ML estimate of 25 per site rate categories
+
+Likelihood of final tree will be evaluated and optimized under GAMMA
+
+GAMMA Model parameters will be estimated up to an accuracy of 0.1000000000 Log Likelihood units
+
+Partition: 0
+Alignment Patterns: 1726
+Name: No Name Provided
+DataType: DNA
+Substitution Matrix: GTR
+
+
+
+
+RAxML was called as follows:
+
+standard-RAxML-8.2.13/raxmlHPC-PTHREADS-SSE3 -s MDDB-phylogeny/l0.2_s3_4_1500_o1.0_a0_constr_localpair/chunks/aligned/118_1044_p__Ascomycota_c__Dothideomycetes_o__Pleosporales.fasta -n 118.out -w /home/dzee/Documents/Studie/Bachelorklas/mycodiversity-arise/phylogenetic_placement/regen_trees -m GTRCAT -p 12345 -T 4 -o OUTGROUP 
+
+
+Partition: 0 with name: No Name Provided
+Base frequencies: 0.228 0.261 0.238 0.273 
+
+Inference[0]: Time 643.205381 CAT-based likelihood -155197.302773, best rearrangement setting 10
+alpha[0]: 1.000000 rates[0] ac ag at cg ct gt: 1.908833 2.859801 1.965733 1.027791 4.427837 1.000000 
+
+
+Conducting final model optimizations on all 1 trees under GAMMA-based models ....
+
+Inference[0] final GAMMA-based Likelihood: -158266.017071 tree written to file /home/dzee/Documents/Studie/Bachelorklas/mycodiversity-arise/phylogenetic_placement/regen_trees/RAxML_result.118.out
+
+
+Starting final GAMMA-based thorough Optimization on tree 0 likelihood -158266.017071 .... 
+
+Final GAMMA-based Score of best tree -158253.373505
+
+Program execution info written to /home/dzee/Documents/Studie/Bachelorklas/mycodiversity-arise/phylogenetic_placement/regen_trees/RAxML_info.118.out
+Best-scoring ML tree written to: /home/dzee/Documents/Studie/Bachelorklas/mycodiversity-arise/phylogenetic_placement/regen_trees/RAxML_bestTree.118.out
+
+Overall execution time: 960.077441 secs or 0.266688 hours or 0.011112 days
+

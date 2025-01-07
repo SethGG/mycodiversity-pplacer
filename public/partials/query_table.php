@@ -35,9 +35,10 @@ $view = <<<HTML
                     </div>
                 </div>
                 <footer class="card-footer">
-                    <a class="card-footer-item" hx-post="partials/start_ping.php"
+                    <a class="card-footer-item" hx-post="partials/start_pplacer.php"
                         hx-target="body"
-                        hx-swap="beforeend">Execute Placement</a>
+                        hx-swap="beforeend"
+                        hx-include=".where_filters">Execute Placement</a>
                 </footer>
             </div>
         </div>
