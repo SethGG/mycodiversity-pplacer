@@ -12,26 +12,28 @@ chunk_agg_csv=$input_dir/blast_hits_chunks_agg.csv
 phylogeny_dir=MDDB-phylogeny/l0.2_s3_4_1500_o1.0_a0_constr_localpair
 chunk_align_dir=$phylogeny_dir/chunks/aligned
 chunk_tree_dir=$phylogeny_dir/regen_trees
+alignment_cache_dir=$phylogeny_dir/alignment_cache
 
-# Create output directory for placement results
+# Ensure required directories exist
+mkdir -p "$alignment_cache_dir"
 mkdir -p "$output_dir"
 
-echo "Creating chunk-specific placement directories and FASTA files"
-
-# Extract sequences per chunk
+echo "🔄 Identifying cached and new sequences for placement..."
 awk -F',' 'NR > 1 {print $2 "," $1}' "$chunk_agg_csv" | while IFS=',' read -r chunk seq_id; do
-    # Create a directory for the chunk if it doesn't exist
-    mkdir -p "$output_dir/$chunk"
-    
-    # Append sequence ID to a chunk-specific text file
-    echo "$seq_id" >> "$output_dir/$chunk/seq_ids.txt"
+    chunk_dir="$output_dir/$chunk"
+    mkdir -p "$chunk_dir"
+
+    chunk_cache="$alignment_cache_dir/$chunk.fasta"
+
+    if [[ -f $chunk_cache ]] && grep -q "^>$seq_id\$" "$chunk_cache"; then
+        echo "$seq_id" >> "$chunk_dir/reused_seq_ids.txt"
+    else
+        echo "$seq_id" >> "$chunk_dir/new_seq_ids.txt"
+    fi
 done
 
-# Perform phylogenetic placement for each chunk
+# Process each chunk
 for chunk_dir in "$output_dir"/*; do
-    seq_file="$chunk_dir/seq_ids.txt"
-    output_fasta="$chunk_dir/placed_seqs.fasta"
-    output_refpkg="$chunk_dir/refpkg.refpkg"
     output_align="$chunk_dir/placed_seqs_aligned.fasta"
     output_pplacer="$chunk_dir/placements.jplace"
 
@@ -44,56 +46,66 @@ for chunk_dir in "$output_dir"/*; do
     chunk_align="$chunk_align_dir/$chunk_base_name.fasta"
     chunk_tree_stats="$chunk_tree_dir/RAxML_info.$chunk_base_name_num.out"
     chunk_tree="$chunk_tree_dir/RAxML_bestTree.$chunk_base_name_num.out"
-    
+    chunk_cache="$alignment_cache_dir/$chunk_base_name.fasta"
+
     echo ""
-    echo "Processing Chunk: $chunk_base_name"
+    echo "🧩 Processing Chunk: $chunk_base_name"
     echo "-----------------------------------"
 
-    # Check if required files exist
-    if [[ ! -f $chunk_align ]]; then
-        echo "Chunk alignment file missing: $chunk_align. Skipping chunk."
+    if [[ ! -f $chunk_align || ! -f $chunk_tree_stats || ! -f $chunk_tree ]]; then
+        echo "⚠️  Missing essential files for chunk: $chunk_base_name. Skipping."
         continue
     fi
 
-    if [[ ! -f $chunk_tree_stats ]]; then
-        echo "Tree stats file missing: $chunk_tree_stats. Skipping chunk."
-        continue
-    fi
-
-    if [[ ! -f $chunk_tree ]]; then
-        echo "Tree file missing: $chunk_tree. Skipping chunk."
-        continue
-    fi
-
-    # Create FASTA file for sequences to be placed
-    if [[ -f $seq_file ]]; then
-        echo "Creating FASTA file for sequences to be placed"
-        deps/faSomeRecords "$input_fasta" "$seq_file" "$output_fasta"
-        
-        # Clean up temporary sequence list
-        rm "$seq_file"
+    # Count cached sequences
+    if [[ -f "$chunk_dir/reused_seq_ids.txt" ]]; then
+        deps/faSomeRecords "$chunk_cache" "$chunk_dir/reused_seq_ids.txt" "$chunk_dir/reused_seqs.fasta"
+        cached_count=$(wc -l < "$chunk_dir/reused_seq_ids.txt")
     else
-        echo "Sequences file not found: $seq_file. Skipping chunk."
-        continue
+        touch "$chunk_dir/reused_seqs.fasta"
+        cached_count=0
     fi
 
-    # Create reference package for pplacer
-    echo "Creating reference package for pplacer"
-    taxit create -l its -P "$output_refpkg" \
-    --aln-fasta "$chunk_align" \
-    --tree-stats "$chunk_tree_stats" \
-    --tree-file "$chunk_tree"
+    # Count new sequences
+    if [[ -f "$chunk_dir/new_seq_ids.txt" ]]; then
+        deps/faSomeRecords "$input_fasta" "$chunk_dir/new_seq_ids.txt" "$chunk_dir/new_seqs.fasta"
+        new_count=$(wc -l < "$chunk_dir/new_seq_ids.txt")
+    else
+        touch "$chunk_dir/new_seqs_aligned.fasta"
+        new_count=0
+    fi
 
-    # Align to-be-placed sequences with chunk sequences
-    echo "Aligning to-be-placed sequences with chunk sequences"
-    deps/mafft-linux64/mafft.bat --addfragments "$output_fasta" --keeplength \
-    "$chunk_align" > "$output_align" 2> "$mafft_log"
+    echo "📊 Cached sequences: $cached_count"
+    echo "📊 New sequences: $new_count"
 
-    # Perform placement with pplacer
-    echo "Running pplacer"
-    deps/pplacer-Linux-v1.1.alpha19/pplacer -c "$output_refpkg" \
-    "$output_align" -o "$output_pplacer" > "$pplacer_log"
+    # Align new sequences if needed
+    if [[ $new_count -gt 0 ]]; then
+        echo "🛠️  Aligning $new_count new sequences with MAFFT..."
+        deps/mafft-linux64/mafft.bat --addfragments "$chunk_dir/new_seqs.fasta" --keeplength \
+        "$chunk_align" > "$chunk_dir/new_seqs_aligned_with_chunk.fasta" 2> "$mafft_log"
 
-    # Clean up reference package
-    rm -r "$output_refpkg"
+        deps/faSomeRecords "$chunk_dir/new_seqs_aligned_with_chunk.fasta" "$chunk_dir/new_seq_ids.txt" "$chunk_dir/new_seqs_aligned.fasta"
+
+        # Append new sequences to cache
+        cat "$chunk_dir/new_seqs_aligned.fasta" >> "$chunk_cache"
+    fi
+
+    echo "📂 Creating final alignment file..."
+    cat "$chunk_align" "$chunk_dir/reused_seqs.fasta" "$chunk_dir/new_seqs_aligned.fasta" > "$output_align"
+
+    echo "🚀 Running pplacer..."
+    taxit create -l its -P "$chunk_dir/refpkg.refpkg" \
+        --aln-fasta "$chunk_align" --tree-stats "$chunk_tree_stats" --tree-file "$chunk_tree"
+
+    deps/pplacer-Linux-v1.1.alpha19/pplacer -c "$chunk_dir/refpkg.refpkg" \
+        "$output_align" -o "$output_pplacer" > "$pplacer_log"
+
+    # Cleanup
+    rm -r "$chunk_dir/refpkg.refpkg"
+    rm -f "$chunk_dir/new_seq_ids.txt" "$chunk_dir/reused_seq_ids.txt"
+    rm -f "$chunk_dir/reused_seqs.fasta" "$chunk_dir/new_seqs.fasta" "$chunk_dir/new_seqs_aligned_with_chunk.fasta" "$chunk_dir/new_seqs_aligned.fasta"
+
+    echo "✅ Finished processing chunk: $chunk_base_name"
 done
+
+echo "🎉 Phylogenetic placement complete!"

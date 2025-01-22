@@ -65,7 +65,7 @@ rm "$input_dir/blast_unite_ids.txt"
 echo "🔄 Aggregating chunk statistics..."
 echo "refsequence_pk,majority_chunk,majority_count,unique_chunks" > "$output_blast_chunks_agg"
 
-sort -t',' -k1,1 "$output_blast_chunks" | awk -F',' '
+tail -n +2 "$output_blast_chunks" | sort -t',' -k1,1 | awk -F',' '
     NR > 1 {
         refsequence_pk = $1
         chunk = $4

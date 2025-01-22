@@ -34,7 +34,7 @@ file_put_contents($statsFile, $statsContent);
 // Write FASTA File
 toFastaStartPplacer($results, $fastaFile);
 
-// Run the Phylogenetic Placement Script (placeholder script)
+// Run the Phylogenetic Placement Script
 $command = "cd ../../phylo_placement; bash start_pipeline.sh $fastaFile > $logFile 2>&1 & echo $!";
 exec($command, $output, $returnVar);
 
